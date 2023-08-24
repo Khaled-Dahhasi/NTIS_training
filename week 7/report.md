@@ -221,3 +221,4 @@ By the end of Week 7, the word counter had evolved into a more robust, feature-c
 2. Using a linked list that is dynamically allocated.
 3. Using heap less often unless necessary.
 4. debugging using GDB
+5. using Cmake to create the output files and manage the workflow.
