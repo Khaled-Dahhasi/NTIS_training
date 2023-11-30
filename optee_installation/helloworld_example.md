@@ -48,12 +48,79 @@ alue to D/TA:  TA_DestroyEntryPoint:50 has been called
 D/TC:? 0 destroy_context:326 Destroy TA ctx (0x10195ed0)
 ```
 ## Explanation of Each Line
-- **`D/TC:? 0 tee_ta_init_pseudo_ta_session:`**: Debug log from OP-TEE OS initializing a session with a pseudo-TA.
-- **`D/LD:  ldelf:`**: Debug logs from the OP-TEE OS secure loader.
-- **`D/TC:? 0 tee_ta_invoke_command:`**: Debug log indicating the invocation of a command on the TA.
-- **`I/TA: Hello World!`**: The TA's standard output, printing "Hello World!".
-- **`D/TC:? 0 tee_ta_close_session:`**: Debug log indicating the closing of the TA session.
-- **`D/TC:? 0 destroy_context:`**: Debug log for the destruction of the context associated with the TA.
+1. **Command Execution**:
+   ```
+   $ optee_example_hello_world
+   ```
+   - Executes the Hello World program in OP-TEE.
+
+2. **Session Initialization with Pseudo TA**:
+   ```
+   D/TC:? 0 tee_ta_init_pseudo_ta_session:297 Lookup pseudo TA 8aaaf200-2450-11e4-abe2-0002a5d5c51b
+   ```
+   - Initiates a session with a pseudo Trusted Application (TA) identified by a specific UUID.
+
+3. **ldelf Loading**:
+   ```
+   D/TC:? 0 ldelf_load_ldelf:110 ldelf load address 0x40007000
+   ```
+   - The ldelf (secure loader) component is loaded into a specific memory address.
+
+4. **Loading TS with UUID**:
+   ```
+   D/LD: ldelf:142 Loading TS 8aaaf200-2450-11e4-abe2-0002a5d5c51b
+   ```
+   - The Trusted Service with the given UUID is being loaded.
+
+5. **Lookup of TA ELF Binary**:
+   ```
+   D/TC:? 0 ldelf_syscall_open_bin:163 Lookup user TA ELF (various types)
+   ```
+   - Several attempts to locate the TA's ELF binary across different storage types (early TA, Secure Storage, REE).
+
+6. **Configuration Warnings**:
+   ```
+   I/TC: WARNING (insecure configuration)
+   ```
+   - Indicates potential configuration issues, like an insecure setup.
+
+7. **ELF File Loading**:
+   ```
+   D/LD: ldelf:176 ELF at a specific memory address
+   ```
+   - The ELF file of the TA is loaded into memory.
+
+8. **TA Creation and Session Opening**:
+   ```
+   D/TA: TA_CreateEntryPoint and __GP11_TA_OpenSessionEntryPoint
+   ```
+   - Indicates the creation of the TA and the opening of a session with it.
+
+9. **TA Output and Operations**:
+   ```
+   I/TA: Hello World!, Got value: 42, Increase value to: 43
+   ```
+   - The TA prints "Hello World!", receives and increments a value.
+
+10. **Session Closure and TA Destruction**:
+   ```
+   D/TC:? 0 tee_ta_close_session and TA_DestroyEntryPoint
+   ```
+   - The session is closed, and the TA is destroyed, including output like "Goodbye!".
+
+These lines provide a comprehensive view of the initialization, execution, and termination processes within a TEE using OP-TEE, demonstrating typical interactions with a Trusted Application.
+
+### In the output of `optee_example_hello_world`, the following prefixes are observed along with their meanings:
+
+- **`D/TC`**: "Debug/Trusted Core" - These messages are debug logs from the Trusted Core component of OP-TEE, which is responsible for secure world operations.
+
+- **`D/LD`**: "Debug/Loader" - These are debug messages from the loader component in OP-TEE, related to loading and handling of Trusted Applications.
+
+- **`I/TC`**: "Information/Trusted Core" - Informational messages from the Trusted Core. The messages marked with this prefix often include warnings or general information about the system's state.
+
+- **`D/TA`**: "Debug/Trusted Application" - Debug messages specific to the Trusted Application's operations and lifecycle events.
+
+- **`I/TA`**: "Information/Trusted Application" - Informational messages or output from the Trusted Application.
 
 ## Warnings and Their Meaning
 - **`WARNING: 'Insecure configuration'`**: This warning indicates that the system may not be fully secure, which could be due to a non-production configuration or because certain security features are disabled for development/testing.
